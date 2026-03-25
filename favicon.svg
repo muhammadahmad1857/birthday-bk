@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#1e0060"/>
+      <stop offset="100%" stop-color="#020010"/>
+    </radialGradient>
+    <linearGradient id="flameBody" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%"   stop-color="#ff8c00"/>
+      <stop offset="38%"  stop-color="#ffcc00"/>
+      <stop offset="72%"  stop-color="#fff5aa"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.55"/>
+    </linearGradient>
+    <radialGradient id="flameGlow" cx="50%" cy="58%" r="50%">
+      <stop offset="0%"   stop-color="#ff9900" stop-opacity="0.75"/>
+      <stop offset="60%"  stop-color="#ff5500" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#ff2200" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- ── CAKE ────────────────────────────────────────────── -->
+  <!-- Bottom tier (chocolate) -->
+  <rect x="3.5" y="22" width="25" height="7.5" rx="2.5" fill="#2e1000"/>
+  <rect x="3.5" y="22" width="25" height="2"   rx="1.2" fill="#fff6e8" opacity="0.75"/>
+
+  <!-- Middle tier (red velvet) -->
+  <rect x="6.5" y="16.5" width="19" height="6.5" rx="2" fill="#6b0a19"/>
+  <rect x="6.5" y="16.5" width="19" height="1.8" rx="1" fill="#fff6e8" opacity="0.72"/>
+
+  <!-- Top tier (purple) -->
+  <rect x="10"  y="12.5" width="12" height="5"   rx="1.6" fill="#50197a"/>
+  <rect x="10"  y="12.5" width="12" height="1.5" rx="0.8" fill="#fff6e8" opacity="0.78"/>
+
+  <!-- Sprinkles on top tier -->
+  <rect x="11.5" y="14" width="2.2" height="0.9" rx="0.45" fill="#ffd700"
+        transform="rotate(35 12.6 14.45)"/>
+  <rect x="15.2" y="14" width="2.2" height="0.9" rx="0.45" fill="#00e5ff"
+        transform="rotate(-25 16.3 14.45)"/>
+  <rect x="18.3" y="14" width="2.2" height="0.9" rx="0.45" fill="#bd93f9"
+        transform="rotate(50 19.4 14.45)"/>
+
+  <!-- Gold trim rings -->
+  <rect x="3.5"  y="28.8" width="25" height="0.7" rx="0.35" fill="#ffd700" opacity="0.55"/>
+  <rect x="6.5"  y="22.6" width="19" height="0.6" rx="0.3"  fill="#ffd700" opacity="0.45"/>
+
+  <!-- ── CANDLE ───────────────────────────────────────────── -->
+  <rect x="14.4" y="7.2" width="3.2" height="6.3" rx="1.1" fill="#ffd700"/>
+  <!-- Wax sheen highlight -->
+  <rect x="15.1" y="7.7" width="0.9" height="3.5" rx="0.45" fill="white" opacity="0.30"/>
+  <!-- Wick -->
+  <line x1="16" y1="7.2" x2="16.3" y2="5.8" stroke="#1a0800" stroke-width="0.7"
+        stroke-linecap="round"/>
+
+  <!-- ── FLAME ───────────────────────────────────────────── -->
+  <!-- Soft outer glow (blurred) -->
+  <ellipse cx="16.1" cy="4.8" rx="5.5" ry="5.8" fill="url(#flameGlow)" filter="url(#soft)"/>
+
+  <!-- Main teardrop flame -->
+  <path d="M16.1,0.8
+           C19.4,3.4 19.8,7.6 16.1,9.6
+           C12.4,7.6 12.8,3.4 16.1,0.8 Z"
+        fill="url(#flameBody)"/>
+
+  <!-- Inner bright core -->
+  <path d="M16.1,2.9
+           C17.5,4.5 17.7,7.0 16.1,8.4
+           C14.5,7.0 14.7,4.5 16.1,2.9 Z"
+        fill="white" opacity="0.70"/>
+
+  <!-- Blue hot-zone at wick base -->
+  <ellipse cx="16.1" cy="9.3" rx="1.5" ry="0.9" fill="#b8d4ff" opacity="0.90"/>
+
+  <!-- Subtle purple border glow around whole icon -->
+  <rect width="32" height="32" rx="7" fill="none"
+        stroke="#7c3aed" stroke-width="1.2" opacity="0.55"/>
+</svg>

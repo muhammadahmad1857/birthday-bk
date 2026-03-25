@@ -4,6 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happy Birthday Bakar! 🎂</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" href="favicon.svg"/>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 
   <!-- Three.js r148 — global build, works from file:// -->
@@ -43,21 +45,21 @@
 
   <!-- Journey texts — stacked, GSAP shows one at a time -->
   <div id="exp-journey" aria-live="polite">
-    <div class="j-txt jt1">✦ A world built just for you...</div>
-    <div class="j-txt jt2">🎈 Rise through the stars, Bakar...</div>
-    <div class="j-txt jt3">The party is waiting above...</div>
+    <div class="j-txt jt1">✦ A little world made for my best friend...</div>
+    <div class="j-txt jt2">🎈 Rise through the stars, Tower-kun...</div>
+    <div class="j-txt jt3">Your birthday party is waiting above...</div>
     <div class="j-txt jt4">HAPPY<br>BIRTHDAY<br>BAKAR!</div>
   </div>
 
   <!-- Candle blow UI (shown after reveal) -->
   <div id="exp-interact">
-    <p id="exp-candles-left" class="exp-candles-left">🕯 5 candles left</p>
-    <button id="exp-blow-btn" class="exp-blow-btn">💨 &nbsp;Blow!</button>
+    <p id="exp-candles-left" class="exp-candles-left">🕯 5 candles to go</p>
+    <button id="exp-blow-btn" class="exp-blow-btn">💨 &nbsp;Blow Candle!</button>
     <p class="exp-blow-tip">click · or blow into mic</p>
   </div>
 
   <!-- Bottom hint -->
-  <div id="exp-hint">◈ &nbsp; Enjoy the ride &nbsp; ◈</div>
+  <div id="exp-hint">◈ &nbsp; For Bakar, with love &nbsp; ◈</div>
 
   <!-- Close -->
   <button id="exp-close">← Back to Page</button>
@@ -110,13 +112,13 @@
   <section id="hero" class="s-hero">
     <div class="speed-lines" aria-hidden="true"></div>
     <div class="hero-content">
-      <div class="hero-eye">★ TODAY IS THE DAY ★</div>
+      <div class="hero-eye">★ TODAY WE CELEBRATE YOU ★</div>
       <h1 class="hero-title">BAKAR</h1>
       <p class="hero-sub">
-        The guy who looks too innocent to have done anything wrong.<br>
-        <em>Spoiler: he has.</em>
+        Funny, lovely, and always real. My day-one, Tower-kun.<br>
+        <em>Calm face. Friendly chaos.</em>
       </p>
-      <div class="hero-badge">🎂 BIRTHDAY ARC — ACTIVATED 🎂</div>
+      <div class="hero-badge">🎂 BAKAR BIRTHDAY ARC — MAIN CHARACTER MODE 🎂</div>
     </div>
     <div class="scroll-caret" aria-label="Scroll down">
       <span></span><span></span><span></span>
@@ -126,27 +128,27 @@
   <!-- ── CAKE ────────────────────────────────────────────── -->
   <section id="cake-section" class="s-cake">
     <div class="s-inner">
-      <h2 class="s-title">🎂 THE BIRTHDAY CAKE 🎂</h2>
+      <h2 class="s-title">🎂 MAKE A WISH, TOWER-KUN 🎂</h2>
 
       <!-- Phase 1: blow candles -->
       <div id="phase-candles">
         <p class="cake-hint">
           TAP A CANDLE TO BLOW IT OUT<br>
-          <small>(we believe in you, probably)</small>
+          <small>(steady aim, birthday champion)</small>
         </p>
         <div id="cake-container">
           <div id="speech-bubble" class="speech-bubble" aria-live="polite"></div>
         </div>
         <div id="combo-display" class="combo-display" aria-live="polite"></div>
         <p id="candle-progress" class="candle-progress">
-          <span id="candle-blown">0</span> / 6 candles blown
+          <span id="candle-blown">0</span> / 6 candles down
         </p>
       </div>
 
       <!-- Phase 2: cut the cake (shown after all candles blown) -->
       <div id="phase-cut" class="phase-cut hidden">
-        <p class="cut-ready-txt">ALL CANDLES OUT! 🎉</p>
-        <p class="cut-sub-txt">Now make a wish... then cut the cake!</p>
+        <p class="cut-ready-txt">ALL CANDLES DOWN! LET'S GO 🎉</p>
+        <p class="cut-sub-txt">Make your wish quietly... then slice it like a finale.</p>
         <button id="cut-btn" class="cut-btn">
           <span class="knife-icon">🔪</span> CUT THE CAKE!
         </button>
@@ -160,44 +162,44 @@
   <section id="wishes-section" class="s-wishes">
     <div class="s-inner">
       <h2 class="s-title glitch-text" data-text="BIRTHDAY WISHES">BIRTHDAY WISHES</h2>
-      <p class="s-sub">from the bottom of our chaotic hearts</p>
+      <p class="s-sub">from me, with love and light roast energy</p>
       <div class="wishes-grid">
 
         <article class="wish-card" data-card="1">
           <div class="card-num">01</div>
           <div class="card-icon">🌀</div>
-          <h3>Isekai Warning</h3>
-          <p>If Bakar got truck-kun'd into another world, he'd be the overpowered protagonist in <strong>3 episodes flat</strong>. The harem would form on its own. The demon king would just surrender.</p>
-          <div class="card-badge">MAY YOUR STATS BE ∞</div>
+          <h3>Islamabad Core Memory</h3>
+          <p>That Islamabad trip was pure fun from start to finish. If our friendship had seasons, that day was a fan-favorite episode. <strong>Big laughs, zero regrets, perfect vibes.</strong></p>
+          <div class="card-badge">BEST ARC UNLOCKED</div>
         </article>
 
         <article class="wish-card" data-card="2">
           <div class="card-num">02</div>
           <div class="card-icon">⚓</div>
-          <h3>Nakama Speech</h3>
-          <p>You're the guy who shows up every time without being asked. No announcement, no drama — just there. Luffy wouldn't even need to ask. <strong>You'd already be on the ship.</strong></p>
-          <div class="card-badge">NAMI SAYS YOU'RE COOL</div>
+          <h3>Badminton Day Buff</h3>
+          <p>That badminton day was crazy in the best way, and you still picked me on your side. No dramatic speech needed. <strong>That's loyal teammate behavior, every time.</strong></p>
+          <div class="card-badge">NAKAMA + TEAM BUFF</div>
         </article>
 
         <article class="wish-card" data-card="3">
           <div class="card-num">03</div>
           <div class="card-icon">🔭</div>
-          <h3>DBZ Scouter</h3>
+          <h3>Small Text, Big Meaning</h3>
           <p>
             <span class="mono">SCANNING: <strong>BAKAR</strong></span><br>
-            <span class="mono">Innocent Face ........ <strong>MAXIMUM</strong></span><br>
-            <span class="mono">Actual Chaos ......... <strong>OVER 9000</strong></span><br>
-            <span class="mono">Power Level .......... <strong>[SCOUTER DESTROYED]</strong></span>
+            <span class="mono">Funny Energy ......... <strong>MAXIMUM</strong></span><br>
+            <span class="mono">Loyalty Level ........ <strong>ELITE</strong></span><br>
+            <span class="mono">Trust Meter .......... <strong>LOCKED IN</strong></span>
           </p>
-          <div class="card-badge">VEGETA THREW THE SCOUTER</div>
+          <div class="card-badge">GOOD HEART DETECTED</div>
         </article>
 
         <article class="wish-card" data-card="4">
           <div class="card-num">04</div>
           <div class="card-icon">📜</div>
-          <h3>Birthday No Jutsu</h3>
-          <p>Sealed on this sacred scroll: <strong>Infinite W's</strong>, <strong>legendary rizz</strong>, <strong>guilt-free naps</strong>, and the power to explain any anime plot to anyone who didn't ask. Use wisely. You won't.</p>
-          <div class="card-badge">DATTEBAYO!</div>
+          <h3>Tower-kun Build</h3>
+          <p>You're tall, calm, and somehow still the funniest in the room. Main-character height with wholesome side-quest energy. <strong>May this year bring wins, peace, and solid growth.</strong></p>
+          <div class="card-badge">HEIGHT DLC: ACTIVE</div>
         </article>
 
       </div>
@@ -207,7 +209,7 @@
   <!-- ── PROFILE ──────────────────────────────────────────── -->
   <section id="profile-section" class="s-profile">
     <div class="s-inner">
-      <h2 class="s-title glitch-header" data-text="CHARACTER PROFILE">CHARACTER PROFILE</h2>
+      <h2 class="s-title glitch-header" data-text="BAKAR CHARACTER FILE">BAKAR CHARACTER FILE</h2>
       <div class="profile-card">
         <div class="profile-top">
           <div class="avatar-box">
@@ -217,33 +219,33 @@
           </div>
           <div class="profile-info">
             <div class="info-row"><span class="info-key">NAME</span><span class="info-val">Abubakar</span></div>
-            <div class="info-row"><span class="info-key">ALIAS</span><span class="info-val">Bakar / The Innocent One</span></div>
-            <div class="info-row"><span class="info-key">CLASS</span><span class="info-val rarity">SSS-Rare · Deceptively Innocent</span></div>
-            <div class="info-row"><span class="info-key">GUILD</span><span class="info-val">Certified Anime Scholar Society</span></div>
-            <div class="info-row"><span class="info-key">PHRASE</span><span class="info-val">"I didn't do anything."<br><em class="narrator">[narrator: he did]</em></span></div>
+            <div class="info-row"><span class="info-key">ALIAS</span><span class="info-val">Bakar / Tower-kun</span></div>
+            <div class="info-row"><span class="info-key">CLASS</span><span class="info-val rarity">SSS-Rare · Loyal Chaos Support</span></div>
+            <div class="info-row"><span class="info-key">GUILD</span><span class="info-val">The Real Ones Association</span></div>
+            <div class="info-row"><span class="info-key">PHRASE</span><span class="info-val">"I'm chill, bro."<br><em class="narrator">[narrator: chaos already started]</em></span></div>
           </div>
         </div>
         <div class="stats-section">
           <div class="stats-hdr">— STAT SHEET —</div>
-          <div class="stat-row"><span class="s-label">Innocence Face</span><div class="s-track"><div class="s-fill" data-pct="99"></div></div><span class="s-val">99/100</span></div>
-          <div class="stat-row"><span class="s-label">Actual Innocence</span><div class="s-track"><div class="s-fill" data-pct="30" data-color="#ff6b6b"></div></div><span class="s-val">30/100</span></div>
-          <div class="stat-row"><span class="s-label">Anime Knowledge</span><div class="s-track"><div class="s-fill" data-pct="80" data-color="#00ffcc"></div></div><span class="s-val">80/100</span></div>
-          <div class="stat-row"><span class="s-label">Unsolicited Plot Explaining</span><div class="s-track"><div class="s-fill" data-pct="100" data-color="#ffd700"></div></div><span class="s-val">120/100 ⚠️</span></div>
-          <div class="stat-row"><span class="s-label">Rizz (Latent)</span><div class="s-track"><div class="s-fill" data-pct="75" data-color="#ff69b4"></div></div><span class="s-val">75/100</span></div>
+          <div class="stat-row"><span class="s-label">Loyalty</span><div class="s-track"><div class="s-fill" data-pct="100"></div></div><span class="s-val">100/100</span></div>
+          <div class="stat-row"><span class="s-label">Calm Face</span><div class="s-track"><div class="s-fill" data-pct="95" data-color="#ff6b6b"></div></div><span class="s-val">95/100</span></div>
+          <div class="stat-row"><span class="s-label">Anime Radar</span><div class="s-track"><div class="s-fill" data-pct="80" data-color="#00ffcc"></div></div><span class="s-val">80/100</span></div>
+          <div class="stat-row"><span class="s-label">Funny Timing</span><div class="s-track"><div class="s-fill" data-pct="92" data-color="#ffd700"></div></div><span class="s-val">92/100</span></div>
+          <div class="stat-row"><span class="s-label">Tall Aura</span><div class="s-track"><div class="s-fill" data-pct="100" data-color="#ff69b4"></div></div><span class="s-val">120/100 ⚠️</span></div>
         </div>
         <div class="weaknesses">
           <div class="stats-hdr">— WEAKNESSES —</div>
           <div class="tag-cloud">
-            <span class="wtag">Spoilers</span><span class="wtag">Being Called Out</span>
-            <span class="wtag">Loud Noises</span><span class="wtag">Running Out of Episodes</span>
-            <span class="wtag">People Who Don't Watch Anime</span>
+            <span class="wtag">Late Replies</span><span class="wtag">Spoilers</span>
+            <span class="wtag">Losing Badminton Rallies</span><span class="wtag">Hungry Mood</span>
+            <span class="wtag">Too Many Compliments</span>
           </div>
         </div>
       </div>
-      <div class="roast r1">"innocent face, factory-installed at birth"</div>
-      <div class="roast r2">"explains One Piece to walls — wall feels guilty"</div>
-      <div class="roast r3">"face of an angel, playlist of a chaotic gremlin"</div>
-      <div class="roast r4">"asked 'who did that?' — he did. he knows."</div>
+      <div class="roast r1">"too tall to hide, still tries"</div>
+      <div class="roast r2">"acts chill, then drops the funniest line"</div>
+      <div class="roast r3">"trust level: elite"</div>
+      <div class="roast r4">"Tower-kun spotted, chaos nearby"</div>
     </div>
   </section>
 
@@ -252,11 +254,11 @@
     <div id="jojo-arrow" class="jojo-arrow" aria-hidden="true">→→→→</div>
     <div id="sepia-overlay" class="sepia-overlay" aria-hidden="true"></div>
     <div class="footer-body">
-      <div class="tbc-tag">— TO BE CONTINUED —</div>
-      <h2 class="footer-title">And so ends Episode ??:<br><em>The Birthday Arc</em></h2>
-      <p class="footer-next"><strong>NEXT EPISODE:</strong> Bakar discovers he was the main character all along. Everyone is shocked. No one is shocked.</p>
+      <div class="tbc-tag">— END CREDITS —</div>
+      <h2 class="footer-title">Another year of Bakar:<br><em>still solid, still special</em></h2>
+      <p class="footer-next"><strong>NEXT YEAR GOALS:</strong> more wins, more peace, better health, and success in everything you touch.</p>
       <div class="footer-line"></div>
-      <p class="footer-credits">Made with love, chaos, and anime references 💜<br><small>Happy Birthday, Bakar. You absolute menace. We love you.</small></p>
+      <p class="footer-credits">Made by me, for my brother from another mother.<br><small>Happy Birthday, Bakar. Love you always, my guy.</small></p>
       <div class="footer-stars" aria-hidden="true">★ ★ ★ ★ ★</div>
     </div>
   </section>
@@ -418,7 +420,7 @@ function initExpOverlay() {
         if(f.lt) f.lt.intensity=0.68;
       });
     }
-    lbl.textContent='🕯 5 candles left';
+    lbl.textContent='🕯 5 candles to go';
     blowBtn.disabled=false;
   }
 
@@ -1176,12 +1178,12 @@ function initCake() {
   var comboEl =document.getElementById('combo-display');
   var blownEl =document.getElementById('candle-blown');
   var speechTO=null;
-  var MSGS=['One breath, one victory! You\'re basically Naruto now. 🍃',
-            'TWO DOWN! The cake trembles before you!',
-            'HALF-WAY! Even Luffy needed meat for this. ⚓',
-            'FOUR CANDLES! Demon King-level lung capacity. 👁️',
-            'ONE LEFT! Madara has entered the chat. 💥',
-            '🎉 SUGOI! ALL BLOWN! Now cut the cake!'];
+  var MSGS=['First one down. Clean start, champion.',
+            'Two down. Tower-kun aim is locked in.',
+            'Halfway! This is looking way too easy.',
+            'Four gone. Calm face, pro moves.',
+            'One left. Finish like a main character.',
+            'All out! Proud of you, birthday king. Now cut the cake!'];
 
   function showBubble(msg){
     speechEl.textContent=msg; speechEl.classList.add('show');
@@ -1399,7 +1401,7 @@ function cakeCut(cakeGrp, topTier, dome, cam, rimLight, comp, rend, sc) {
 
   // Celebration text
   var feedback = document.getElementById('cut-feedback');
-  feedback.innerHTML = '🎂 HAPPY BIRTHDAY BAKAR! 🎂<br><small>♪ Happy Birthday to You ♪</small>';
+  feedback.innerHTML = '🎂 HAPPY BIRTHDAY BAKAR! 🎂<br><small>From me to you: more wins, more peace, always.</small>';
   gsap.from(feedback, {scale:0.5, opacity:0, duration:0.6, delay:0.6, ease:'back.out(2)'});
 
   // Show "Happy Birthday" in world
