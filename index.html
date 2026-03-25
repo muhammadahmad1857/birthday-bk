@@ -291,6 +291,108 @@ var cakeCutDone = false;
 var worldReady  = false;
 var _bassLevel  = 0;
 
+/* ────────────────────────────────────────────────────────────
+   FLAME + SMOKE TEXTURES  (canvas-generated, shared sprites)
+   ──────────────────────────────────────────────────────────── */
+var _ftex = null;
+function getFlameTex() {
+  if(_ftex) return _ftex;
+  function mkTex(w,h,fn){
+    var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+    var ctx=cv.getContext('2d'); ctx.clearRect(0,0,w,h); fn(ctx,w,h);
+    return new THREE.CanvasTexture(cv);
+  }
+  // Outer glow halo — soft radial blob
+  var glow=mkTex(128,128,function(ctx,w,h){
+    var g=ctx.createRadialGradient(w/2,h*0.56,2,w/2,h*0.5,w*0.48);
+    g.addColorStop(0,'rgba(255,190,70,0.92)');
+    g.addColorStop(0.32,'rgba(255,100,10,0.58)');
+    g.addColorStop(0.68,'rgba(220,35,0,0.22)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.ellipse(w/2,h/2,w/2,h*0.52,0,0,Math.PI*2); ctx.fill();
+  });
+  // Teardrop flame body
+  var flame=mkTex(64,128,function(ctx,w,h){
+    ctx.beginPath();
+    ctx.moveTo(w/2,5);
+    ctx.bezierCurveTo(w*0.86,h*0.28,w*0.88,h*0.64,w/2,h*0.88);
+    ctx.bezierCurveTo(w*0.12,h*0.64,w*0.14,h*0.28,w/2,5);
+    ctx.closePath();
+    var g=ctx.createLinearGradient(w/2,h*0.88,w/2,5);
+    g.addColorStop(0,'rgba(255,155,15,1)');
+    g.addColorStop(0.28,'rgba(255,95,0,0.95)');
+    g.addColorStop(0.60,'rgba(255,225,85,0.92)');
+    g.addColorStop(0.84,'rgba(255,255,195,0.96)');
+    g.addColorStop(1,'rgba(255,255,255,0.25)');
+    ctx.fillStyle=g; ctx.fill();
+  });
+  // Bright narrow inner core
+  var core=mkTex(32,96,function(ctx,w,h){
+    ctx.beginPath();
+    ctx.moveTo(w/2,4);
+    ctx.bezierCurveTo(w*0.76,h*0.22,w*0.76,h*0.58,w/2,h*0.84);
+    ctx.bezierCurveTo(w*0.24,h*0.58,w*0.24,h*0.22,w/2,4);
+    ctx.closePath();
+    var g=ctx.createLinearGradient(w/2,h*0.84,w/2,4);
+    g.addColorStop(0,'rgba(255,225,80,1)');
+    g.addColorStop(0.38,'rgba(255,255,190,1)');
+    g.addColorStop(0.80,'rgba(255,255,255,1)');
+    g.addColorStop(1,'rgba(255,255,255,0.08)');
+    ctx.fillStyle=g; ctx.fill();
+  });
+  // Blue hot-zone at wick
+  var blue=mkTex(32,48,function(ctx,w,h){
+    var g=ctx.createRadialGradient(w/2,h*0.66,1,w/2,h*0.58,w*0.44);
+    g.addColorStop(0,'rgba(210,230,255,1)');
+    g.addColorStop(0.42,'rgba(140,175,255,0.68)');
+    g.addColorStop(1,'rgba(90,110,255,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.ellipse(w/2,h*0.64,w*0.4,h*0.36,0,0,Math.PI*2); ctx.fill();
+  });
+  _ftex={glow:glow,flame:flame,core:core,blue:blue};
+  return _ftex;
+}
+
+var _smkTex=null;
+function getSmokeTex(){
+  if(_smkTex) return _smkTex;
+  var cv=document.createElement('canvas'); cv.width=64; cv.height=64;
+  var ctx=cv.getContext('2d');
+  var g=ctx.createRadialGradient(32,32,2,32,32,30);
+  g.addColorStop(0,'rgba(215,215,225,0.82)');
+  g.addColorStop(0.48,'rgba(188,188,200,0.36)');
+  g.addColorStop(1,'rgba(160,160,175,0)');
+  ctx.fillStyle=g;
+  ctx.beginPath(); ctx.arc(32,32,31,0,Math.PI*2); ctx.fill();
+  _smkTex=new THREE.CanvasTexture(cv);
+  return _smkTex;
+}
+
+function spawnSmoke(worldPos, scn){
+  var smk=getSmokeTex();
+  for(var si=0;si<9;si++){
+    (function(){
+      var sp=new THREE.Sprite(new THREE.SpriteMaterial({
+        map:smk,transparent:true,opacity:0.54,
+        color:0xbbbbcc,depthWrite:false
+      }));
+      var sz=0.11+Math.random()*0.13;
+      sp.scale.set(sz,sz,1);
+      sp.position.set(
+        worldPos.x+(Math.random()-0.5)*0.14,
+        worldPos.y+(Math.random()*0.09),
+        worldPos.z+(Math.random()-0.5)*0.14
+      );
+      scn.add(sp);
+      var dy=0.6+Math.random()*0.6,dx=(Math.random()-0.5)*0.4,dl=Math.random()*0.28;
+      gsap.to(sp.position,{y:sp.position.y+dy,x:sp.position.x+dx,duration:1.7,delay:dl,ease:'power1.out'});
+      gsap.to(sp.material,{opacity:0,duration:1.7,delay:dl,ease:'power2.in',
+        onComplete:function(){ scn.remove(sp); sp.material.dispose(); }});
+    })();
+  }
+}
+
 /* ════════════════════════════════════════════════════════════
    EXPERIENCE OVERLAY  — top-left button opens cinematic world
    ════════════════════════════════════════════════════════════ */
@@ -309,9 +411,11 @@ function initExpOverlay() {
     if(window._expFlames){
       window._expFlames.forEach(function(f,i){
         window._expCandleAlive[i]=true;
-        f.g.visible=true;
-        gsap.set(f.g.scale,{x:1,y:1,z:1});
-        if(f.lt) f.lt.intensity=0.55;
+        f.sprites.forEach(function(sp){
+          sp.scale.set(sp.userData.bx,sp.userData.by,1);
+          sp.material.opacity=sp.userData.bo;
+        });
+        if(f.lt) f.lt.intensity=0.68;
       });
     }
     lbl.textContent='🕯 5 candles left';
@@ -391,16 +495,20 @@ function initExpOverlay() {
   function blowNextCandle() {
     var flames = window._expFlames;
     if(!flames) return;
-    // find first alive
     for(var i=0;i<flames.length;i++){
       if(window._expCandleAlive[i]){
         window._expCandleAlive[i]=false;
         blownCount++;
-        // animate flame out
-        gsap.to(flames[i].g.scale,{x:0,y:0,z:0,duration:0.3,ease:'power2.in',
-          onComplete:function(fi){ flames[fi].g.visible=false; }
-            .bind(null,i)});
-        gsap.to(flames[i].lt,{intensity:0,duration:0.3});
+        var f=flames[i];
+        // Smoke puff at world position of flame
+        var wp=new THREE.Vector3(); f.g.getWorldPosition(wp);
+        spawnSmoke(wp, worldScene);
+        // Scale sprites to zero
+        f.sprites.forEach(function(sp){
+          gsap.to(sp.scale,{x:0,y:0,duration:0.28,ease:'power2.in'});
+          gsap.to(sp.material,{opacity:0,duration:0.25});
+        });
+        gsap.to(f.lt,{intensity:0,duration:0.3});
         var left = 5 - blownCount;
         lbl.textContent = left>0 ? '🕯 '+left+' candle'+(left>1?'s':'')+' left' : '🎉 All out!';
         if(blownCount===5){
@@ -409,7 +517,6 @@ function initExpOverlay() {
             confettiBurst(100);
             playHappyBirthday();
             gsap.to('#exp-interact',{opacity:0,duration:0.8,delay:0.5});
-            // Show final message briefly
             gsap.set('.jt4',{y:0,scale:0.7});
             gsap.to('.jt4',{opacity:1,scale:1,duration:1,ease:'back.out(1.5)',delay:0.3});
           },400);
@@ -690,34 +797,53 @@ function initWorld() {
   dome2.position.y = 1.04;
   expCakeGrp.add(dome2);
 
-  // candles + flames — store lights separately for blow interaction
+  // ── CANDLES — sprite flames, waxy bodies, curved wicks ──────
   var expFlames = [], expCandleLts = [], expCandleAlive = [true,true,true,true,true];
-  var cColours = [0xffd700,0x4da6ff,0xffd700,0x00ffcc,0xffd700];
+  var cColours = [0xffd700,0x4da6ff,0x9b59b6,0x00ffcc,0xff8844];
+  var ftxW = getFlameTex();
   for(var ci=0;ci<5;ci++) {
     var ang = (ci/5)*Math.PI*2;
-    var cx = Math.sin(ang)*0.12, cz = Math.cos(ang)*0.12;
-    // candle body
-    expCakeGrp.add(function(x,z,col){
-      var c=new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.022,0.2,8),
-        new THREE.MeshStandardMaterial({color:col}));
-      c.position.set(x,1.14,z); return c;
-    }(cx,cz,cColours[ci]));
-    // candle light (reference kept for blow-out)
-    var cl=new THREE.PointLight(0xffaa33, 0.55, 2.5, 2);
-    cl.position.set(cx,1.38,cz);
-    expCakeGrp.add(cl);
-    expCandleLts.push(cl);
-    // flame group
-    var fg=new THREE.Group(); fg.position.set(cx,1.36,cz);
-    var of=new THREE.Mesh(new THREE.ConeGeometry(0.026,0.09,8),
-      new THREE.MeshStandardMaterial({color:0xff5500,emissive:0xff3300,emissiveIntensity:3,transparent:true,opacity:0.9,depthWrite:false}));
-    of.position.y=0.045;
-    var inf=new THREE.Mesh(new THREE.ConeGeometry(0.014,0.058,8),
-      new THREE.MeshStandardMaterial({color:0xffff88,emissive:0xffffaa,emissiveIntensity:5,transparent:true,opacity:0.97,depthWrite:false}));
-    inf.position.y=0.047;
-    fg.add(of); fg.add(inf);
+    var cx = Math.sin(ang)*0.115, cz = Math.cos(ang)*0.115;
+    // Waxy body (MeshPhysicalMaterial clearcoat = sheen)
+    var wMat=new THREE.MeshPhysicalMaterial({color:cColours[ci],roughness:0.24,metalness:0,clearcoat:0.92,clearcoatRoughness:0.1});
+    var wBody=new THREE.Mesh(new THREE.CylinderGeometry(0.019,0.023,0.20,12),wMat);
+    wBody.position.set(cx,1.10,cz); expCakeGrp.add(wBody);
+    // Wax pool on top (melted puddle)
+    var wPool=new THREE.Mesh(new THREE.CylinderGeometry(0.020,0.020,0.011,12),
+      new THREE.MeshPhysicalMaterial({color:0xfff2dc,roughness:0.48,clearcoat:0.88}));
+    wPool.position.set(cx,1.206,cz); expCakeGrp.add(wPool);
+    // Curved wick (TubeGeometry from CatmullRomCurve3)
+    var wkCrv=new THREE.CatmullRomCurve3([
+      new THREE.Vector3(cx,1.212,cz),
+      new THREE.Vector3(cx+0.004,1.228,cz),
+      new THREE.Vector3(cx-0.002,1.244,cz+0.002)
+    ]);
+    expCakeGrp.add(new THREE.Mesh(new THREE.TubeGeometry(wkCrv,3,0.0055,4,false),
+      new THREE.MeshStandardMaterial({color:0x1a0800})));
+    // Glowing ember tip
+    var emb=new THREE.Mesh(new THREE.SphereGeometry(0.0085,6,6),
+      new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:6}));
+    emb.position.set(cx,1.252,cz); expCakeGrp.add(emb);
+    // Point light per candle
+    var cl=new THREE.PointLight(0xffaa33,0.68,3.0,2);
+    cl.position.set(cx,1.27,cz); expCakeGrp.add(cl); expCandleLts.push(cl);
+    // Sprite flame group
+    var fg=new THREE.Group(); fg.position.set(cx,1.262,cz);
+    fg.userData.baseX=cx; fg.userData.baseZ=cz;
     expCakeGrp.add(fg);
-    expFlames.push({g:fg,o:of,i:inf,seed:Math.random()*Math.PI*2,lt:cl});
+    // Glow halo
+    var spGl=new THREE.Sprite(new THREE.SpriteMaterial({map:ftxW.glow,color:0xff6600,transparent:true,opacity:0.50,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spGl.scale.set(0.135,0.135,1); spGl.position.y=0.035; spGl.userData={bx:0.135,by:0.135,bo:0.50}; fg.add(spGl);
+    // Teardrop flame
+    var spFl=new THREE.Sprite(new THREE.SpriteMaterial({map:ftxW.flame,color:0xff9900,transparent:true,opacity:0.90,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spFl.scale.set(0.056,0.098,1); spFl.position.y=0.048; spFl.userData={bx:0.056,by:0.098,bo:0.90}; fg.add(spFl);
+    // Bright core
+    var spCo=new THREE.Sprite(new THREE.SpriteMaterial({map:ftxW.core,color:0xffffcc,transparent:true,opacity:0.97,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spCo.scale.set(0.024,0.063,1); spCo.position.y=0.050; spCo.userData={bx:0.024,by:0.063,bo:0.97}; fg.add(spCo);
+    // Blue hot base
+    var spBl=new THREE.Sprite(new THREE.SpriteMaterial({map:ftxW.blue,color:0xaabbff,transparent:true,opacity:0.80,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spBl.scale.set(0.025,0.020,1); spBl.position.y=0.010; spBl.userData={bx:0.025,by:0.020,bo:0.80}; fg.add(spBl);
+    expFlames.push({g:fg,sprites:[spGl,spFl,spCo,spBl],seed:Math.random()*Math.PI*2,lt:cl});
   }
 
   // floating sparkles
@@ -781,13 +907,24 @@ function initWorld() {
       b.scale.setScalar(1 + _bassLevel*0.07);
     });
 
-    // Flame flicker on room cake
+    // Flame flicker — sprite-based realistic animation
     if(window._expFlames) {
       window._expFlames.forEach(function(f) {
-        var flk = Math.sin(t*18+f.seed)*0.22+Math.sin(t*27+f.seed*1.7)*0.12;
-        f.g.scale.set(1+flk*0.18, 1+flk*0.12, 1+flk*0.18);
-        f.g.position.x += (Math.sin(t*14+f.seed)*0.002);
-        f.o.material.opacity = 0.82+flk*0.18;
+        if(!f.sprites) return;
+        var s=f.seed;
+        var flk=Math.sin(t*9.4+s)*0.20+Math.sin(t*14.8+s*1.5)*0.12+Math.sin(t*23.1+s*2.2)*0.06;
+        var swy=Math.sin(t*4.6+s)*0.003+Math.sin(t*8.2+s*1.9)*0.0015;
+        f.g.position.x=f.g.userData.baseX+swy;
+        f.g.position.z=f.g.userData.baseZ+Math.sin(t*5.5+s*0.9)*0.002;
+        var sy=1+flk*0.15, sx=1-flk*0.07;
+        f.sprites[0].scale.set(0.135*sx,0.135*sy,1);
+        f.sprites[0].material.opacity=0.46+Math.abs(flk)*0.16;
+        f.sprites[1].scale.set(0.056*sx,0.098*sy,1);
+        f.sprites[1].material.opacity=0.88+flk*0.10;
+        f.sprites[2].scale.set(0.024*sx,0.063*sy,1);
+        f.sprites[2].material.opacity=0.94+flk*0.05;
+        f.sprites[3].material.opacity=0.74+Math.abs(flk)*0.18;
+        if(f.lt) f.lt.intensity=0.62+Math.abs(flk)*0.42;
       });
     }
 
@@ -944,7 +1081,7 @@ function initCake() {
     cakeGroup.add(pearl);
   }
 
-  // ── CANDLES ───────────────────────────────────────────────
+  // ── CANDLES — sprite flames, waxy clearcoat bodies ─────────
   var CANDLE_N=6;
   candleAlive=[]; blownCount=0; flameGroups=[]; candleLights=[];
   flameMeshAll=[];
@@ -955,21 +1092,60 @@ function initCake() {
     var a=(i/5)*Math.PI*2;
     candlePos.push({x:Math.cos(a)*0.55, z:Math.sin(a)*0.55});
   }
+  var ftx2=getFlameTex();
   candlePos.forEach(function(pos,i){
     var g=new THREE.Group(); g.position.set(pos.x,4.1,pos.z); cakeGroup.add(g);
-    var body=new THREE.Mesh(new THREE.CylinderGeometry(0.075,0.075,0.6,10),phys(candleHues[i],0.5,0.1));
-    body.position.y=0.3; body.castShadow=true; g.add(body);
-    var wick=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.1,5),new THREE.MeshStandardMaterial({color:0x111111}));
-    wick.position.y=0.65; g.add(wick);
-    var fg=new THREE.Group(); fg.position.y=0.72; g.add(fg); flameGroups.push(fg);
-    var outerF=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.28,10),
-      new THREE.MeshStandardMaterial({color:0xff5500,emissive:0xff3300,emissiveIntensity:3,transparent:true,opacity:0.88,depthWrite:false}));
-    outerF.position.y=0.14; fg.add(outerF);
-    var innerF=new THREE.Mesh(new THREE.ConeGeometry(0.046,0.17,10),
-      new THREE.MeshStandardMaterial({color:0xffff88,emissive:0xffffaa,emissiveIntensity:5,transparent:true,opacity:0.96,depthWrite:false}));
-    innerF.position.y=0.145; fg.add(innerF);
-    flameMeshAll.push({group:fg,index:i,m1:outerF,m2:innerF});
-    var cl=new THREE.PointLight(0xffaa44,1.0,5,2); cl.position.y=0.8; g.add(cl); candleLights.push(cl);
+    // Waxy body — clearcoat for that real candle sheen
+    var wMat=new THREE.MeshPhysicalMaterial({color:candleHues[i],roughness:0.22,metalness:0,clearcoat:0.94,clearcoatRoughness:0.09});
+    var body=new THREE.Mesh(new THREE.CylinderGeometry(0.068,0.082,0.62,14),wMat);
+    body.position.y=0.31; body.castShadow=true; g.add(body);
+    // Wax drip texture rings
+    for(var dr=0;dr<2;dr++){
+      var dh=0.06+Math.random()*0.06;
+      var drip=new THREE.Mesh(new THREE.CylinderGeometry(0.069,0.069,dh,12),
+        new THREE.MeshPhysicalMaterial({color:candleHues[i],roughness:0.3,clearcoat:0.7,transparent:true,opacity:0.7}));
+      drip.position.y=0.15+dr*0.22+(Math.random()*0.06);
+      var dA=Math.random()*Math.PI*2;
+      drip.position.x=Math.sin(dA)*0.001; drip.position.z=Math.cos(dA)*0.001;
+      g.add(drip);
+    }
+    // Wax pool on top (melted puddle)
+    var wPool=new THREE.Mesh(new THREE.CylinderGeometry(0.070,0.070,0.014,14),
+      new THREE.MeshPhysicalMaterial({color:0xfff0d8,roughness:0.45,clearcoat:0.88}));
+    wPool.position.y=0.627; g.add(wPool);
+    // Curved wick
+    var wkCrv=new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0,0.634,0),
+      new THREE.Vector3(0.005,0.658,0),
+      new THREE.Vector3(-0.003,0.680,0.002)
+    ]);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(wkCrv,4,0.006,4,false),
+      new THREE.MeshStandardMaterial({color:0x1a0800})));
+    // Glowing ember at wick tip
+    var emb=new THREE.Mesh(new THREE.SphereGeometry(0.009,6,6),
+      new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:6}));
+    emb.position.y=0.684; g.add(emb);
+    // Sprite flame group
+    var fg=new THREE.Group(); fg.position.y=0.70; g.add(fg); flameGroups.push(fg);
+    // Glow halo
+    var spGl=new THREE.Sprite(new THREE.SpriteMaterial({map:ftx2.glow,color:0xff6600,transparent:true,opacity:0.47,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spGl.scale.set(0.50,0.50,1); spGl.position.y=0.13; spGl.userData={bx:0.50,by:0.50,bo:0.47}; fg.add(spGl);
+    // Teardrop flame
+    var spFl=new THREE.Sprite(new THREE.SpriteMaterial({map:ftx2.flame,color:0xff9900,transparent:true,opacity:0.88,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spFl.scale.set(0.20,0.36,1); spFl.position.y=0.17; spFl.userData={bx:0.20,by:0.36,bo:0.88}; fg.add(spFl);
+    // Bright core
+    var spCo=new THREE.Sprite(new THREE.SpriteMaterial({map:ftx2.core,color:0xffffcc,transparent:true,opacity:0.97,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spCo.scale.set(0.086,0.20,1); spCo.position.y=0.175; spCo.userData={bx:0.086,by:0.20,bo:0.97}; fg.add(spCo);
+    // Blue hot zone
+    var spBl=new THREE.Sprite(new THREE.SpriteMaterial({map:ftx2.blue,color:0xaabbff,transparent:true,opacity:0.76,blending:THREE.AdditiveBlending,depthWrite:false}));
+    spBl.scale.set(0.086,0.065,1); spBl.position.y=0.032; spBl.userData={bx:0.086,by:0.065,bo:0.76}; fg.add(spBl);
+    // Invisible hit cylinder for raycaster (clickable area over flame)
+    var hitM=new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.38,6),
+      new THREE.MeshBasicMaterial({visible:false}));
+    hitM.position.y=0.17; fg.add(hitM);
+    flameMeshAll.push({group:fg,index:i,m1:hitM,m2:hitM,sprites:[spGl,spFl,spCo,spBl]});
+    // Warm point light — each candle contributes to scene glow
+    var cl=new THREE.PointLight(0xffaa44,1.25,6.0,2); cl.position.y=0.85; g.add(cl); candleLights.push(cl);
   });
 
   // Manual auto-rotate + pointer-drag (replaces OrbitControls)
@@ -1016,7 +1192,18 @@ function initCake() {
   function blowCandle(i){
     if(!candleAlive[i])return;
     candleAlive[i]=false; blownCount++;
-    gsap.to(flameGroups[i].scale,{x:0,y:0,z:0,duration:0.35,ease:'back.in(2)'});
+    // Smoke puff at world position of the flame group
+    var fd=flameMeshAll[i];
+    if(fd){
+      var wp=new THREE.Vector3();
+      fd.group.getWorldPosition(wp);
+      spawnSmoke(wp, scene);
+    }
+    // Snuff out sprites
+    flameMeshAll[i].sprites.forEach(function(sp){
+      gsap.to(sp.scale,{x:0,y:0,duration:0.30,ease:'power2.in'});
+      gsap.to(sp.material,{opacity:0,duration:0.26});
+    });
     gsap.to(candleLights[i],{intensity:0,duration:0.35});
     blownEl.textContent=blownCount;
     comboEl.innerHTML=blownCount+'<span class="c-label">COMBO!</span>';
@@ -1067,13 +1254,25 @@ function initCake() {
   (function animateCake(){
     requestAnimationFrame(animateCake);
     var t=clock2.getElapsedTime();
-    flameGroups.forEach(function(fg,i){
-      if(!candleAlive[i])return;
-      var s=flameSeed[i];
-      fg.scale.x=1+Math.sin(t*9+s)*0.14;
-      fg.scale.y=1+Math.cos(t*7+s*1.3)*0.09;
-      fg.position.x=Math.sin(t*5+s*2)*0.012;
-      candleLights[i].intensity=0.8+Math.sin(t*12+s)*0.4+_bassLevel*0.6;
+    // Realistic sprite flame animation
+    flameMeshAll.forEach(function(fd){
+      if(!candleAlive[fd.index]) return;
+      var i=fd.index, s=flameSeed[i];
+      // Multi-frequency turbulent flicker
+      var flk=Math.sin(t*9.3+s)*0.18+Math.sin(t*14.7+s*1.5)*0.11+Math.sin(t*23.0+s*2.2)*0.06;
+      // Sway — gentle air movement
+      var swy=Math.sin(t*4.7+s)*0.017+Math.sin(t*8.4+s*1.8)*0.009;
+      var fg=fd.group;
+      fg.position.x=swy;
+      fg.position.z=Math.sin(t*5.6+s*0.85)*0.010;
+      // Scale breathe: taller→narrower (conserve visual volume)
+      var sy=1+flk*0.14, sx=1-flk*0.07;
+      var sp=fd.sprites;
+      sp[0].scale.set(0.50*sx,0.50*sy,1); sp[0].material.opacity=0.43+Math.abs(flk)*0.15;
+      sp[1].scale.set(0.20*sx,0.36*sy,1); sp[1].material.opacity=0.86+flk*0.10;
+      sp[2].scale.set(0.086*sx,0.20*sy,1); sp[2].material.opacity=0.95+flk*0.04;
+      sp[3].material.opacity=0.70+Math.abs(flk)*0.17;
+      candleLights[i].intensity=1.1+Math.sin(t*11.2+s)*0.52+Math.sin(t*19+s*2.4)*0.26+_bassLevel*0.9;
     });
     // Sparkle drift
     var pos2=spkGeo.attributes.position.array;
