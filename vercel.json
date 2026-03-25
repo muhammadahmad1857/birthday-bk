@@ -1,5 +1,9 @@
 {
   "version": 2,
   "builds": [{ "src": "**", "use": "@vercel/static" }],
-  "routes": [{ "src": "/(.*)", "dest": "/$1" }]
+  "routes": [
+    { "src": "/how-to-enjoy", "dest": "/how-to-enjoy/index.html" },
+    { "src": "/how-to-enjoy/", "dest": "/how-to-enjoy/index.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }

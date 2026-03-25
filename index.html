@@ -171,28 +171,31 @@
     <div class="s-inner">
       <h2 class="s-title">🎂 MAKE A WISH, TOWER-KUN 🎂</h2>
 
-      <!-- Phase 1: blow candles -->
+      <!-- 3D cake canvas — always visible across both phases -->
+      <div id="cake-container">
+        <div id="speech-bubble" class="speech-bubble" aria-live="polite"></div>
+      </div>
+
+      <!-- Phase 1: blow candles UI -->
       <div id="phase-candles">
         <p class="cake-hint">
           TAP A CANDLE TO BLOW IT OUT<br>
           <small>(steady aim, birthday champion)</small>
         </p>
-        <div id="cake-container">
-          <div id="speech-bubble" class="speech-bubble" aria-live="polite"></div>
-        </div>
         <div id="combo-display" class="combo-display" aria-live="polite"></div>
         <p id="candle-progress" class="candle-progress">
           <span id="candle-blown">0</span> / 6 candles down
         </p>
       </div>
 
-      <!-- Phase 2: cut the cake (shown after all candles blown) -->
+      <!-- Phase 2: cut the cake UI -->
       <div id="phase-cut" class="phase-cut hidden">
-        <p class="cut-ready-txt">ALL CANDLES DOWN! LET'S GO 🎉</p>
-        <p class="cut-sub-txt">Make your wish quietly... then slice it like a finale.</p>
-        <button id="cut-btn" class="cut-btn">
-          <span class="knife-icon">🔪</span> CUT THE CAKE!
-        </button>
+        <p class="cut-ready-txt">ALL CANDLES OUT! 🎉</p>
+        <p class="cut-sub-txt">Click anywhere on the cake to cut it</p>
+        <div class="cut-knife-hint" aria-hidden="true">
+          <span class="ck-knife">🔪</span>
+          <span class="ck-dash">— — — — — —</span>
+        </div>
         <div id="cut-feedback" class="cut-feedback" aria-live="polite"></div>
       </div>
 
@@ -310,6 +313,7 @@
 <div id="postcredits" class="pc-overlay" aria-hidden="true">
   <div class="pc-grain"></div>
   <div class="pc-vignette"></div>
+  <button class="pc-close-x" id="pc-close-x" aria-label="Close post-credits">✕</button>
   <div class="pc-body">
     <div class="pc-tag" id="pc-tag">— POST CREDITS SCENE —</div>
     <div class="pc-location" id="pc-location">[ Somewhere in the city. Late at night. ]</div>
@@ -326,69 +330,7 @@
 </div>
 
 <!-- ════════════════ HOW-TO GUIDE ════════════════ -->
-<button id="guide-btn" class="guide-btn" title="How to enjoy this">?</button>
-
-<div id="guide-overlay" class="guide-overlay" aria-hidden="true">
-  <div class="guide-inner">
-    <div class="guide-header">
-      <div class="guide-badge">INTERACTIVE GUIDE</div>
-      <h2 class="guide-title">HOW TO ENJOY THIS</h2>
-      <p class="guide-sub">a field manual for the birthday experience</p>
-    </div>
-    <div class="guide-steps">
-
-      <div class="g-step">
-        <div class="g-icon-wrap"><span class="g-icon">◈</span></div>
-        <div class="g-text">
-          <strong>ENTER EXPERIENCE</strong>
-          <p>Hit the <em>◈ Enter Experience</em> button (top-left). The camera flies through a world of balloons straight into the birthday room. Full cinematic. Don't skip it.</p>
-        </div>
-      </div>
-
-      <div class="g-step">
-        <div class="g-icon-wrap"><span class="g-icon">🕯</span></div>
-        <div class="g-text">
-          <strong>BLOW THE CANDLES</strong>
-          <p>Inside the experience: actually <em>blow into your mic</em> and the candles go out one by one. Or tap the button if you're shy. Blow all 5 to unlock the finale.</p>
-        </div>
-      </div>
-
-      <div class="g-step">
-        <div class="g-icon-wrap"><span class="g-icon">🎂</span></div>
-        <div class="g-text">
-          <strong>SPIN &amp; CLICK THE CAKE</strong>
-          <p>The 3D cake on this page is draggable — spin it. <em>Click directly on a flame</em> to blow that candle out. All 6 must go before you can cut.</p>
-        </div>
-      </div>
-
-      <div class="g-step">
-        <div class="g-icon-wrap"><span class="g-icon">🔪</span></div>
-        <div class="g-text">
-          <strong>CUT THE CAKE</strong>
-          <p>After all 6 candles are blown: a big CUT button appears. Press it. Something happens. Trust the process. Stay for the post-credits.</p>
-        </div>
-      </div>
-
-      <div class="g-step">
-        <div class="g-icon-wrap"><span class="g-icon">🎵</span></div>
-        <div class="g-text">
-          <strong>MUSIC PLAYER</strong>
-          <p>Bottom-right corner — tap the <em>🎵</em> icon to open the player. Bakar's playlist. Visualizer included. Shuffle. Repeat. Vibe.</p>
-        </div>
-      </div>
-
-      <div class="g-step">
-        <div class="g-icon-wrap"><span class="g-icon">↓</span></div>
-        <div class="g-text">
-          <strong>SCROLL EVERYTHING</strong>
-          <p>There are 6 sections: hero → age stats → cake → wishes → character profile → ending. Don't just sit on the first screen.</p>
-        </div>
-      </div>
-
-    </div>
-    <button class="guide-close-btn" id="guide-close">✓ &nbsp;Got it, let's go</button>
-  </div>
-</div>
+<a id="guide-btn" class="guide-btn" title="How to enjoy this" aria-label="Open how to enjoy page" href="/how-to-enjoy">?</a>
 
 <audio id="audio-el" preload="none"></audio>
 
@@ -412,7 +354,7 @@ var PLAYLIST = [
    GLOBAL STATE
    ──────────────────────────────────────────────────────────── */
 var worldCamera, worldScene, worldRenderer, worldBalloons = [], worldClock;
-var cakeGroup, topTierMesh, domeMesh, candleAlive, blownCount, flameGroups, candleLights, flameMeshAll;
+var cakeGroup, topTierMesh, domeMesh, botTierMesh, midTierMesh, candleAlive, blownCount, flameGroups, candleLights, flameMeshAll;
 var audioCtxGlobal = null;
 var cakeCutDone = false;
 var worldReady  = false;
@@ -1173,8 +1115,8 @@ function initCake() {
   trimM.rotation.x=Math.PI/2; trimM.position.y=-0.66; cakeGroup.add(trimM);
 
   // Tiers
-  addMesh(new THREE.CylinderGeometry(2.25,2.45,1.3,48),phys(0x3d1a00,0.6,0.05,0,0,0.1), 0,    true);
-  addMesh(new THREE.CylinderGeometry(1.65,1.75,1.05,48),phys(0x8B0000,0.55,0.05,0,0,0.1),1.75, true);
+  botTierMesh=addMesh(new THREE.CylinderGeometry(2.25,2.45,1.3,48),phys(0x3d1a00,0.6,0.05,0,0,0.1), 0,    true);
+  midTierMesh=addMesh(new THREE.CylinderGeometry(1.65,1.75,1.05,48),phys(0x8B0000,0.55,0.05,0,0,0.1),1.75, true);
   topTierMesh=addMesh(new THREE.CylinderGeometry(1.05,1.15,0.85,48),phys(0x6a2d8f,0.5,0.05,0,0,0.1),3.15,true);
   domeMesh   =addMesh(new THREE.SphereGeometry(1.05,32,16,0,Math.PI*2,0,Math.PI/2),phys(0xfff5e6,0.08,0,0,0,1.0),3.6,true);
 
@@ -1350,12 +1292,104 @@ function initCake() {
     if(blownCount===CANDLE_N) setTimeout(allCandlesDone,700);
   }
 
+  // ── CUTTING MODE ────────────────────────────────────────────
+  var cuttingMode = false;
+  var knifeFollower = null;
+
+  function enterCuttingMode(){
+    cuttingMode = true;
+    // CSS-styled knife blade that hovers over the canvas
+    knifeFollower = document.createElement('div');
+    knifeFollower.innerHTML =
+      '<div style="width:6px;height:90px;background:linear-gradient(180deg,#f0f0f0 0%,#c8c8c8 35%,#888 80%,#555 100%);border-radius:3px 3px 1px 1px;box-shadow:inset -2px 0 4px rgba(255,255,255,0.6),0 0 14px rgba(255,210,60,0.8)"></div>'
+      +'<div style="width:16px;height:24px;background:linear-gradient(180deg,#3a1a00,#6a3000);border-radius:2px;margin-top:1px;box-shadow:0 3px 8px rgba(0,0,0,0.9)"></div>';
+    knifeFollower.style.cssText='position:fixed;pointer-events:none;z-index:9999;display:none;flex-direction:column;align-items:center;filter:drop-shadow(0 0 8px rgba(255,200,50,0.75));transform-origin:top center;';
+    document.body.appendChild(knifeFollower);
+    renderer.domElement.style.cursor='none';
+    renderer.domElement.addEventListener('mouseenter',function(){ knifeFollower.style.display='flex'; });
+    renderer.domElement.addEventListener('mouseleave',function(){ knifeFollower.style.display='none'; });
+    renderer.domElement.addEventListener('mousemove', function(e){ knifeFollower.style.left=(e.clientX-3)+'px'; knifeFollower.style.top=(e.clientY-115)+'px'; });
+  }
+
+  function performKnifeCut(clientX, clientY){
+    if(cakeCutDone || !cuttingMode) return;
+    cuttingMode = false;
+    renderer.domElement.style.cursor='';
+    if(knifeFollower){ knifeFollower.remove(); knifeFollower=null; }
+
+    var rect = renderer.domElement.getBoundingClientRect();
+    var cx = rect.left + rect.width * 0.5; // always plunge at center of cake
+
+    // ── CSS knife blade plunges DOWN from above ───────────────
+    var knifeFx = document.createElement('div');
+    knifeFx.innerHTML =
+      '<div style="width:8px;height:130px;background:linear-gradient(180deg,#f0f0f0 0%,#c8c8c8 30%,#888 75%,#555 100%);border-radius:4px 4px 1px 1px;box-shadow:inset -3px 0 5px rgba(255,255,255,0.65),0 0 22px rgba(255,210,60,1)"></div>'
+      +'<div style="width:20px;height:32px;background:linear-gradient(180deg,#3a1a00,#6a3000);border-radius:3px;margin-top:2px;box-shadow:0 4px 12px rgba(0,0,0,0.9)"></div>';
+    knifeFx.style.cssText='position:fixed;z-index:9999;pointer-events:none;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 18px rgba(255,200,50,0.9));';
+    document.body.appendChild(knifeFx);
+    gsap.set(knifeFx, {x:cx-10, y:rect.top-180});
+    // Fast plunge down
+    gsap.to(knifeFx, {y:rect.top+rect.height*0.38, duration:0.22, ease:'power4.in',
+      onComplete:function(){
+        setTimeout(function(){
+          gsap.to(knifeFx, {y:rect.top-180, duration:0.55, ease:'power3.out',
+            onComplete:function(){ knifeFx.remove(); }
+          });
+        }, 140);
+      }
+    });
+
+    // ── Vertical glow slash line ───────────────────────────────
+    var slash = document.createElement('div');
+    slash.style.cssText = 'position:fixed;z-index:9998;pointer-events:none;width:5px;height:0;border-radius:3px;'
+      +'left:'+(cx-2.5)+'px;top:'+rect.top+'px;'
+      +'background:linear-gradient(180deg,transparent,rgba(255,252,200,0.95) 15%,rgba(255,245,160,0.95) 85%,transparent);'
+      +'box-shadow:0 0 16px 5px rgba(255,220,80,0.9),0 0 40px 12px rgba(255,180,30,0.5);';
+    document.body.appendChild(slash);
+    gsap.to(slash, {height:rect.height*0.78, duration:0.22, ease:'power4.in',
+      onComplete:function(){ gsap.to(slash,{opacity:0,duration:0.7,delay:0.12,onComplete:function(){slash.remove();}}); }
+    });
+
+    // ── Screen shake on impact ────────────────────────────────
+    gsap.fromTo('#cake-container',{x:0},{x:7,duration:0.04,repeat:8,yoyo:true,ease:'power1.inOut',delay:0.21});
+
+    // ── Impact crumb burst (2D) ───────────────────────────────
+    setTimeout(function(){
+      var crumbCols=['#5c2a00','#c0392b','#7d3eab','#fff0e0','#ffd700','#8B0000'];
+      for(var i=0;i<24;i++){
+        var c=document.createElement('div');
+        var ang=Math.random()*Math.PI*2;
+        var spd=50+Math.random()*160;
+        c.style.cssText='position:fixed;z-index:9998;pointer-events:none;width:'+(4+Math.random()*7)+'px;height:'+(4+Math.random()*7)+'px;'
+          +'border-radius:'+(Math.random()>0.4?'50%':'2px')+';background:'+crumbCols[Math.floor(Math.random()*crumbCols.length)]+';'
+          +'left:'+(cx-4)+'px;top:'+(rect.top+rect.height*0.42)+'px;';
+        document.body.appendChild(c);
+        gsap.to(c,{x:Math.cos(ang)*spd,y:Math.sin(ang)*spd-(Math.random()*60),
+          opacity:0,duration:0.45+Math.random()*0.4,ease:'power2.out',
+          onComplete:function(){c.remove();}
+        });
+      }
+    }, 215);
+
+    // ── White flash ───────────────────────────────────────────
+    var flash=document.createElement('div');
+    flash.style.cssText='position:fixed;inset:0;z-index:9997;pointer-events:none;background:rgba(255,252,200,0.32);';
+    document.body.appendChild(flash);
+    gsap.to(flash,{opacity:0,duration:0.45,delay:0.22,onComplete:function(){flash.remove();}});
+
+    // ── Trigger the 3D cake cut ───────────────────────────────
+    setTimeout(function(){
+      cakeCut(cakeGroup, topTierMesh, domeMesh, camera, rimP, composer, renderer, scene);
+    }, 370);
+  }
+
   function allCandlesDone(){
     gsap.to(camera.position,{z:7,y:5.5,duration:1.8,ease:'power2.inOut'});
     confettiBurst(70);
     document.getElementById('phase-candles').style.display='none';
     document.getElementById('phase-cut').classList.remove('hidden');
     gsap.from('#phase-cut',{opacity:0,y:30,duration:0.8,ease:'back.out(1.5)'});
+    setTimeout(enterCuttingMode, 1200);
   }
 
   function normCoords(cX,cY){
@@ -1375,15 +1409,16 @@ function initCake() {
     if(entry)blowCandle(entry.index);
   }
 
-  renderer.domElement.addEventListener('click',function(e){tryBlow(normCoords(e.clientX,e.clientY));});
-  renderer.domElement.addEventListener('touchstart',function(e){
-    e.preventDefault(); var t=e.changedTouches[0]; tryBlow(normCoords(t.clientX,t.clientY));
-  },{passive:false});
-
-  // Cut button
-  document.getElementById('cut-btn').addEventListener('click', function(){
-    cakeCut(cakeGroup, topTierMesh, domeMesh, camera, rimP, composer, renderer, scene);
+  renderer.domElement.addEventListener('click',function(e){
+    if(cuttingMode){ performKnifeCut(e.clientX, e.clientY); return; }
+    tryBlow(normCoords(e.clientX,e.clientY));
   });
+  renderer.domElement.addEventListener('touchstart',function(e){
+    e.preventDefault();
+    var t=e.changedTouches[0];
+    if(cuttingMode){ performKnifeCut(t.clientX, t.clientY); return; }
+    tryBlow(normCoords(t.clientX,t.clientY));
+  },{passive:false});
 
   // Render loop
   var clock2=new THREE.Clock();
@@ -1470,81 +1505,119 @@ function cakeCut(cakeGrp, topTier, dome, cam, rimLight, comp, rend, sc) {
   if(cakeCutDone) return;
   cakeCutDone = true;
 
-  // Knife animation CSS
-  var knife = document.createElement('div');
-  knife.textContent='🔪';
-  knife.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:5rem;z-index:9999;pointer-events:none;filter:drop-shadow(0 0 20px #ffd700)';
-  document.body.appendChild(knife);
-  gsap.fromTo(knife,
-    {scale:0, rotation:-30},
-    {scale:1.4, duration:0.4, ease:'back.out(2)', onComplete: function(){
-      gsap.to(knife, {scale:0, duration:0.3, delay:0.3, onComplete:function(){knife.remove();}});
-    }}
-  );
-  gsap.fromTo(knife, {x:'-50%',y:'-50%'}, {x:'-30%',y:'-80%', duration:0.5, ease:'power2.inOut'});
+  // ── Helper: duplicate a mesh into left/right halves ──────────
+  function splitTier(orig) {
+    var lm = orig.material.clone();
+    var rm = orig.material.clone();
+    lm.clippingPlanes = [new THREE.Plane(new THREE.Vector3(1,0,0), 0)];
+    rm.clippingPlanes = [new THREE.Plane(new THREE.Vector3(-1,0,0), 0)];
+    lm.needsUpdate = rm.needsUpdate = true;
+    var lh = new THREE.Mesh(orig.geometry, lm);
+    var rh = new THREE.Mesh(orig.geometry, rm);
+    lh.position.copy(orig.position); rh.position.copy(orig.position);
+    lh.rotation.copy(orig.rotation); rh.rotation.copy(orig.rotation);
+    lh.castShadow = rh.castShadow = true;
+    cakeGrp.add(lh); cakeGrp.add(rh);
+    orig.visible = false;
+    return {l:lh, r:rh};
+  }
 
-  // Split top tier with clipping planes
-  var leftMat = topTier.material.clone();
-  leftMat.clippingPlanes = [new THREE.Plane(new THREE.Vector3(1,0,0), 0)];
-  var leftH = new THREE.Mesh(topTier.geometry, leftMat);
-  leftH.position.copy(topTier.position); cakeGrp.add(leftH);
+  // ── Split all 3 tiers + dome ──────────────────────────────────
+  var botS = splitTier(botTierMesh);
+  var midS = splitTier(midTierMesh);
+  var topS = splitTier(topTier);
+  var domS = splitTier(dome);
 
-  var rightMat = topTier.material.clone();
-  rightMat.clippingPlanes = [new THREE.Plane(new THREE.Vector3(-1,0,0), 0)];
-  var rightH = new THREE.Mesh(topTier.geometry, rightMat);
-  rightH.position.copy(topTier.position); cakeGrp.add(rightH);
+  // ── Interior cross-section discs (cake layers exposed) ───────
+  function addXsec(r, y, col, emI) {
+    var m = new THREE.Mesh(
+      new THREE.CircleGeometry(r, 48),
+      new THREE.MeshStandardMaterial({color:col, roughness:0.65, side:THREE.DoubleSide,
+        emissive:col, emissiveIntensity:emI||0.05})
+    );
+    m.rotation.y = Math.PI/2; m.position.y = y; cakeGrp.add(m);
+  }
+  addXsec(1.3,  0.0,  0x5a2200, 0.04); // chocolate bottom interior
+  addXsec(0.95, 1.75, 0x9e2020, 0.06); // red velvet middle interior
+  addXsec(0.60, 3.15, 0x7030a0, 0.08); // purple top interior
+  addXsec(0.60, 3.60, 0xf0e8d4, 0.02); // cream dome interior
 
-  // Same for dome
-  var leftDomeM = dome.material.clone();
-  leftDomeM.clippingPlanes = [new THREE.Plane(new THREE.Vector3(1,0,0), 0)];
-  var leftD = new THREE.Mesh(dome.geometry, leftDomeM);
-  leftD.position.copy(dome.position); cakeGrp.add(leftD);
+  // ── Frosting layer bands visible at cut ───────────────────────
+  [[1.3,0.65],[0.95,2.28],[0.60,3.57]].forEach(function(v){
+    var fr=new THREE.Mesh(new THREE.CircleGeometry(v[0],32),
+      new THREE.MeshStandardMaterial({color:0xfff5ea,roughness:0.06,side:THREE.DoubleSide}));
+    fr.rotation.y=Math.PI/2; fr.position.y=v[1]; cakeGrp.add(fr);
+  });
 
-  var rightDomeM = dome.material.clone();
-  rightDomeM.clippingPlanes = [new THREE.Plane(new THREE.Vector3(-1,0,0), 0)];
-  var rightD = new THREE.Mesh(dome.geometry, rightDomeM);
-  rightD.position.copy(dome.position); cakeGrp.add(rightD);
+  // ── Animate tiers splitting apart ─────────────────────────────
+  var ease='back.out(1.3)';
+  gsap.to(botS.l.position,{x:-3.0,y:'+=0.15',duration:1.5,ease:ease});
+  gsap.to(botS.r.position,{x: 3.0,y:'+=0.15',duration:1.5,ease:ease});
+  gsap.to(midS.l.position,{x:-2.4,y:'+=0.9', duration:1.35,ease:ease,delay:0.07});
+  gsap.to(midS.r.position,{x: 2.4,y:'+=0.9', duration:1.35,ease:ease,delay:0.07});
+  gsap.to(topS.l.position,{x:-1.9,y:'+=1.4', duration:1.2, ease:ease,delay:0.12});
+  gsap.to(topS.r.position,{x: 1.9,y:'+=1.4', duration:1.2, ease:ease,delay:0.12});
+  gsap.to(domS.l.position,{x:-1.9,y:'+=1.4', duration:1.2, ease:ease,delay:0.15});
+  gsap.to(domS.r.position,{x: 1.9,y:'+=1.4', duration:1.2, ease:ease,delay:0.15});
+  // Tilt for drama
+  gsap.to(botS.l.rotation,{z:-0.14,duration:1.5,ease:'power2.out'});
+  gsap.to(botS.r.rotation,{z: 0.14,duration:1.5,ease:'power2.out'});
+  gsap.to(midS.l.rotation,{z:-0.28,duration:1.35,ease:'power2.out',delay:0.07});
+  gsap.to(midS.r.rotation,{z: 0.28,duration:1.35,ease:'power2.out',delay:0.07});
+  gsap.to(topS.l.rotation,{z:-0.44,duration:1.2, ease:'power2.out',delay:0.12});
+  gsap.to(topS.r.rotation,{z: 0.44,duration:1.2, ease:'power2.out',delay:0.12});
 
-  // Hide originals
-  topTier.visible = false; dome.visible = false;
+  // ── 3D crumb particles from the cut ──────────────────────────
+  var crumbN=80;
+  var crumbGeo=new THREE.BufferGeometry();
+  var cPos=new Float32Array(crumbN*3);
+  var cCol=new Float32Array(crumbN*3);
+  var crumbPalette=[[0.35,0.13,0],[0.75,0.12,0.12],[0.44,0.18,0.62],[0.99,0.94,0.88],[1,0.84,0]];
+  for(var i=0;i<crumbN;i++){
+    cPos[i*3]=(Math.random()-0.5)*0.5; cPos[i*3+1]=0.5+Math.random()*3.2; cPos[i*3+2]=(Math.random()-0.5)*0.2;
+    var cc=crumbPalette[Math.floor(Math.random()*crumbPalette.length)];
+    cCol[i*3]=cc[0]; cCol[i*3+1]=cc[1]; cCol[i*3+2]=cc[2];
+  }
+  crumbGeo.setAttribute('position',new THREE.BufferAttribute(cPos,3));
+  crumbGeo.setAttribute('color',new THREE.BufferAttribute(cCol,3));
+  var crumbs=new THREE.Points(crumbGeo,new THREE.PointsMaterial({size:0.07,vertexColors:true,transparent:true,opacity:0.95,depthWrite:false}));
+  cakeGrp.add(crumbs);
+  var vels=[];
+  for(var i=0;i<crumbN;i++) vels.push({vx:(Math.random()-0.5)*5,vy:1.5+Math.random()*5,vz:(Math.random()-0.5)*5});
+  var crumbT=Date.now();
+  (function animCrumbs(){
+    if(!crumbs.parent) return;
+    var dt=(Date.now()-crumbT)/1000;
+    var pa=crumbGeo.attributes.position.array;
+    for(var i=0;i<crumbN;i++){
+      pa[i*3]  +=vels[i].vx*0.016;
+      pa[i*3+1]+=(vels[i].vy-dt*9)*0.016;
+      pa[i*3+2]+=vels[i].vz*0.016;
+    }
+    crumbGeo.attributes.position.needsUpdate=true;
+    crumbs.material.opacity=Math.max(0,0.95-dt*0.55);
+    if(dt<2.2) requestAnimationFrame(animCrumbs); else cakeGrp.remove(crumbs);
+  })();
 
-  // Cross-section reveal
-  var xsec = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.06, 1.06, 0.12, 32),
-    new THREE.MeshStandardMaterial({color:0xc0392b, roughness:0.6, emissive:0x440000, emissiveIntensity:0.3})
-  );
-  xsec.position.copy(topTier.position); cakeGrp.add(xsec);
+  // ── Lights ────────────────────────────────────────────────────
+  gsap.fromTo(rimLight,{intensity:1.8},{intensity:9,duration:0.12,yoyo:true,repeat:5,ease:'power2.inOut'});
 
-  // Animate halves apart
-  gsap.to(leftH.position,  {x:-2.2, y:'+=1.2', duration:1.1, ease:'back.out(1.5)'});
-  gsap.to(rightH.position, {x: 2.2, y:'+=1.2', duration:1.1, ease:'back.out(1.5)'});
-  gsap.to(leftD.position,  {x:-2.2, y:'+=1.2', duration:1.1, ease:'back.out(1.5)', delay:0.05});
-  gsap.to(rightD.position, {x: 2.2, y:'+=1.2', duration:1.1, ease:'back.out(1.5)', delay:0.05});
-  gsap.to(leftH.rotation,  {z:-0.5, duration:1.1, ease:'power2.out'});
-  gsap.to(rightH.rotation, {z: 0.5, duration:1.1, ease:'power2.out'});
+  // ── Camera pull-back ──────────────────────────────────────────
+  gsap.to(cam.position,{z:7,y:6.5,duration:1.6,ease:'power2.inOut',delay:0.3});
 
-  // Light flash
-  gsap.fromTo(rimLight, {intensity:1.8}, {intensity:6, duration:0.2, yoyo:true, repeat:3, ease:'power2.inOut'});
-
-  // Camera close-up
-  gsap.to(cam.position, {z:6.5, y:6, duration:1.5, ease:'power2.inOut', delay:0.3});
-
-  // Play Happy Birthday
+  // ── Audio ─────────────────────────────────────────────────────
   setTimeout(playHappyBirthday, 400);
 
-  // Massive confetti
-  setTimeout(function(){ confettiBurst(130); }, 500);
+  // ── Confetti ──────────────────────────────────────────────────
+  setTimeout(function(){ confettiBurst(150); }, 450);
 
-  // Celebration text
-  var feedback = document.getElementById('cut-feedback');
-  feedback.innerHTML = '🎂 HAPPY BIRTHDAY BAKAR! 🎂<br><small>From me to you: more wins, more peace, always.</small>';
-  gsap.from(feedback, {scale:0.5, opacity:0, duration:0.6, delay:0.6, ease:'back.out(2)'});
+  // ── Celebration text ──────────────────────────────────────────
+  var feedback=document.getElementById('cut-feedback');
+  feedback.innerHTML='🎂 HAPPY BIRTHDAY BAKAR! 🎂<br><small>From me to you: more wins, more peace, always.</small>';
+  gsap.from(feedback,{scale:0.5,opacity:0,duration:0.7,delay:0.7,ease:'back.out(2)'});
 
-  // Show "Happy Birthday" in world
-  gsap.fromTo('#world-canvas', {filter:'brightness(1)'}, {filter:'brightness(1.5)', duration:0.5, yoyo:true, repeat:3});
-
-  // Roll post-credits once celebration lands.
-  setTimeout(showPostCredits, 2600);
+  // ── Post-credits ──────────────────────────────────────────────
+  setTimeout(showPostCredits, 2800);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1802,47 +1875,25 @@ function initAgeStats(){
 }
 
 /* ════════════════════════════════════════════════════════════
-   GUIDE OVERLAY
-   ════════════════════════════════════════════════════════════ */
-function initGuide(){
-  var btn=document.getElementById('guide-btn');
-  var overlay=document.getElementById('guide-overlay');
-  var closeBtn=document.getElementById('guide-close');
-  if(!btn||!overlay||!closeBtn) return;
-
-  function openGuide(){
-    overlay.classList.add('guide-active');
-    overlay.setAttribute('aria-hidden','false');
-    document.body.style.overflow='hidden';
-  }
-  function closeGuide(){
-    overlay.classList.remove('guide-active');
-    overlay.setAttribute('aria-hidden','true');
-    document.body.style.overflow='';
-  }
-
-  btn.addEventListener('click',openGuide);
-  closeBtn.addEventListener('click',closeGuide);
-  overlay.addEventListener('click',function(e){
-    if(e.target===overlay) closeGuide();
-  });
-}
-
-/* ════════════════════════════════════════════════════════════
    POST CREDITS
    ════════════════════════════════════════════════════════════ */
 function initPostCredits(){
   var overlay=document.getElementById('postcredits');
   var skipBtn=document.getElementById('pc-skip');
+  var closeX=document.getElementById('pc-close-x');
   if(!overlay||!skipBtn) return;
 
   function closePostCredits(){
-    overlay.classList.remove('pc-active');
-    overlay.setAttribute('aria-hidden','true');
-    document.body.style.overflow='';
+    gsap.to(overlay,{opacity:0,duration:0.5,onComplete:function(){
+      overlay.classList.remove('pc-active');
+      overlay.setAttribute('aria-hidden','true');
+      overlay.style.opacity='';
+      document.body.style.overflow='';
+    }});
   }
 
   skipBtn.addEventListener('click',closePostCredits);
+  if(closeX) closeX.addEventListener('click',closePostCredits);
   overlay.addEventListener('click',function(e){
     if(e.target===overlay) closePostCredits();
   });
@@ -1857,6 +1908,7 @@ function initPostCredits(){
     gsap.from('.pc-line',{opacity:0,y:10,stagger:0.18,duration:0.45,delay:0.35,ease:'power2.out'});
     gsap.fromTo('#pc-arrow',{opacity:0,x:-20},{opacity:1,x:0,duration:0.45,delay:1.4,ease:'power2.out'});
     gsap.fromTo('#pc-season',{opacity:0,y:12},{opacity:1,y:0,duration:0.5,delay:1.7,ease:'power2.out'});
+    gsap.fromTo('#pc-skip',{opacity:0,y:8},{opacity:1,y:0,duration:0.5,delay:2.2,ease:'power2.out'});
   };
 }
 
@@ -1872,7 +1924,6 @@ window.addEventListener('load', function(){
   initSakura();
   initWorld();      // balloon world inside overlay — always init
   initExpOverlay(); // wire up the top-left button
-  initGuide();
   initPostCredits();
 
   requestAnimationFrame(function(){
